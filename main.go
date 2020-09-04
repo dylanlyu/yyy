@@ -1,11 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Product struct {
 	Id int
-	name string
-	price int
+	Name string
+	Price int
 }
 
 var (
@@ -18,66 +21,67 @@ func main() {
 	//建立CRUD操作物件
 	//建立第一個物品
 	product := Product{
-		Id: 1,
-		name: "衣服",
-		price: 80,
+		Name: "衣服",
+		Price: 80,
 	}
 	//新增一個
-	add(product)
+	fmt.Println("ADD-->",add(product))
 	//健立第二個物品
 	product = Product{
-		Id: 2,
-		name: "鞋子",
-		price: 100,
+		Name: "鞋子",
+		Price: 100,
 	}
-	add(product)
+	fmt.Println("ADD-->",add(product))
 
 	//更改第二個物品的名字
 	product = Product{
-		Id: 2,
-		name: "白白的鞋子",
-		price: 10000,
+		Name: "白白的鞋子",
+		Price: 10000,
 	}
 	//更改
-	edit(product)
+	fmt.Println("EDIT ID 2 -->",edit(2,product))
 	//列出所有
-	//showAll()
-	//showOne(1)
-	Del(1)
-	showAll()
-
+	fmt.Println("SHOW ALL-->",showAll())
+	//取得一個
+	fmt.Println("SHOW ID 1-->",showOne(1))
+	//刪除一個
+	fmt.Println("DELETE ID 1--->",Del(1))
 
 }
 //新增
-func add(product Product) {
+func add(product Product) string {
+	product.Id = len(products) + 1
 	products[product.Id] = &product
+	p,_ :=json.Marshal(product)
+	return string(p)
 }
 //編輯
-func edit(product Product){
-	if product.Id != 0 {
-		if product.name !="" {
-			products[product.Id].name = product.name
+func edit(id int,product Product) string {
+	if id != 0 {
+		if product.Name !="" {
+			products[id].Name = product.Name
 		}
 
-		if product.price != 0 {
-			products[product.Id].price = product.price
+		if product.Price != 0 {
+			products[id].Price = product.Price
 		}
-
 	}
+	p,_ :=json.Marshal(products[id])
+	return string(p)
 }
 //列出所有
-func showAll() {
-	for _, product := range products {
-		fmt.Println(product.name)
-	}
+func showAll() string {
+	p,_ :=json.Marshal(products)
+	return string(p)
 }
 //列出指定
-func showOne(id int)  {
-	fmt.Println(products[id].Id)
-	fmt.Println(products[id].name)
-	fmt.Println(products[id].price)
+func showOne(id int) string {
+	p,_ :=json.Marshal(products[id])
+	return string(p)
 }
 //刪除指定
-func Del(id int)  {
+func Del(id int) string {
 	delete(products,id)
+	p,_ :=json.Marshal(products)
+	return string(p)
 }
