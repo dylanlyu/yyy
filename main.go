@@ -8,27 +8,30 @@ type Product struct {
 	price int
 }
 
+var (
+	products map[int]*Product
+)
+
 func main() {
 	//建立Product庫
-	var products []Product
+	products = make(map[int]*Product)
 	//建立CRUD操作物件
-	var product Product
 	//建立第一個物品
-	product = Product{
+	product := Product{
 		Id: 1,
 		name: "衣服",
 		price: 80,
 	}
 	//新增一個
-	products = add(product,products)
+	add(product)
 	//健立第二個物品
 	product = Product{
 		Id: 2,
 		name: "鞋子",
 		price: 100,
 	}
-	products = add(product,products)
-	fmt.Println(products[1].name)
+	add(product)
+
 	//更改第二個物品的名字
 	product = Product{
 		Id: 2,
@@ -36,33 +39,45 @@ func main() {
 		price: 10000,
 	}
 	//更改
-	products = edit(product,products)
-	fmt.Println(products[1].name)
+	edit(product)
+	//列出所有
+	//showAll()
+	//showOne(1)
+	Del(1)
+	showAll()
+
 
 }
-
-func add(product Product,products []Product) []Product {
-	products = append(products,product)
-	return products
+//新增
+func add(product Product) {
+	products[product.Id] = &product
 }
-
-func edit(product Product,products []Product) []Product {
-	arrId := 0
-	for i := 0; i < len(products); i++ {
-		if product.Id == products[i].Id {
-			arrId = i
-			continue
-		}
-	}
-
-	if arrId != 0 {
-		if product.name != "" {
-			products[arrId].name = product.name
+//編輯
+func edit(product Product){
+	if product.Id != 0 {
+		if product.name !="" {
+			products[product.Id].name = product.name
 		}
 
 		if product.price != 0 {
-			products[arrId].price = product.price
+			products[product.Id].price = product.price
 		}
+
 	}
-	return products
+}
+//列出所有
+func showAll() {
+	for _, product := range products {
+		fmt.Println(product.name)
+	}
+}
+//列出指定
+func showOne(id int)  {
+	fmt.Println(products[id].Id)
+	fmt.Println(products[id].name)
+	fmt.Println(products[id].price)
+}
+//刪除指定
+func Del(id int)  {
+	delete(products,id)
 }
